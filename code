@@ -8,7 +8,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("🎯 SkillGap AI")
+st.title("SkillGap AI")
 st.subheader("Internship Readiness & Skill Gap Analyzer")
 st.write(
     "Discover your strengths, identify missing skills, "
@@ -131,7 +131,7 @@ if st.button("Analyze My Readiness", type="primary"):
         left, right = st.columns(2)
 
         with left:
-            st.markdown("### ✅ Your Strengths")
+            st.markdown("### Your Strengths")
             if matched:
                 for skill in matched:
                     st.write(f"• {skill.title()}")
@@ -139,7 +139,7 @@ if st.button("Analyze My Readiness", type="primary"):
                 st.write("No matched skills yet.")
 
         with right:
-            st.markdown("### 📌 Skill Gaps")
+            st.markdown("### Skill Gaps")
             if missing:
                 for skill in missing:
                     st.write(f"• {skill.title()}")
@@ -158,7 +158,7 @@ if st.button("Analyze My Readiness", type="primary"):
         st.pyplot(fig)
 
         # Personalized roadmap
-        st.markdown("## 🚀 Your Learning Roadmap")
+        st.markdown("## Your Learning Roadmap")
 
         if missing:
             for i, skill in enumerate(missing, 1):
@@ -175,7 +175,7 @@ if st.button("Analyze My Readiness", type="primary"):
                 "Focus next on projects and interview preparation."
             )
 
-        st.markdown("## 💡 Recommended Next Step")
+        st.markdown("##  Recommended Next Step")
 
         if missing:
             st.write(
