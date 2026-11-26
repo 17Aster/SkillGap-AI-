@@ -1,0 +1,196 @@
+
+import streamlit as st
+import matplotlib.pyplot as plt
+
+st.set_page_config(
+    page_title="SkillGap AI",
+    page_icon="🎯",
+    layout="wide"
+)
+
+st.title("🎯 SkillGap AI")
+st.subheader("Internship Readiness & Skill Gap Analyzer")
+st.write(
+    "Discover your strengths, identify missing skills, "
+    "and create a roadmap for your target internship."
+)
+
+# Role requirements
+roles = {
+    "AI / Machine Learning Intern": [
+        "python", "machine learning", "pandas",
+        "numpy", "statistics", "sql", "data visualization"
+    ],
+    "Data Analyst Intern": [
+        "python", "sql", "excel", "statistics",
+        "pandas", "data visualization", "power bi"
+    ],
+    "Software Development Intern": [
+        "python", "java", "data structures",
+        "algorithms", "sql", "git", "problem solving"
+    ],
+    "Web Development Intern": [
+        "html", "css", "javascript", "react",
+        "git", "api", "sql"
+    ]
+}
+
+learning_resources = {
+    "python": "Practice Python fundamentals, functions, and projects.",
+    "machine learning": "Study supervised learning, model evaluation, and scikit-learn.",
+    "pandas": "Practice data cleaning and DataFrames.",
+    "numpy": "Learn arrays, indexing, and numerical operations.",
+    "statistics": "Study probability, distributions, and hypothesis testing.",
+    "sql": "Practice SELECT, JOIN, GROUP BY, and subqueries.",
+    "data visualization": "Learn Matplotlib and data storytelling.",
+    "excel": "Practice formulas, pivot tables, and data cleaning.",
+    "power bi": "Learn dashboards, Power Query, and DAX basics.",
+    "java": "Practice OOP, collections, and problem-solving.",
+    "data structures": "Study arrays, linked lists, stacks, queues, and trees.",
+    "algorithms": "Practice searching, sorting, and complexity analysis.",
+    "git": "Learn Git commits, branches, and GitHub workflows.",
+    "problem solving": "Solve beginner and intermediate coding problems.",
+    "html": "Build semantic web pages.",
+    "css": "Practice layouts, responsive design, and styling.",
+    "javascript": "Learn DOM manipulation and asynchronous programming.",
+    "react": "Practice components, props, and state.",
+    "api": "Learn REST APIs and JSON."
+}
+
+st.divider()
+
+col1, col2 = st.columns(2)
+
+with col1:
+    role = st.selectbox(
+        "Select your target internship",
+        list(roles.keys())
+    )
+
+with col2:
+    name = st.text_input(
+        "Your name (optional)",
+        placeholder="Enter your name"
+    )
+
+skills_input = st.text_area(
+    "Enter your skills separated by commas",
+    placeholder="Python, Java, SQL, Git, HTML...",
+    height=120
+)
+
+if st.button("Analyze My Readiness", type="primary"):
+
+    if not skills_input.strip():
+        st.warning("Please enter at least one skill.")
+    else:
+        student_skills = {
+            skill.strip().lower()
+            for skill in skills_input.split(",")
+            if skill.strip()
+        }
+
+        required_skills = roles[role]
+
+        matched = [
+            skill for skill in required_skills
+            if skill in student_skills
+        ]
+
+        missing = [
+            skill for skill in required_skills
+            if skill not in student_skills
+        ]
+
+        score = round(
+            len(matched) / len(required_skills) * 100
+        )
+
+        st.divider()
+
+        if name:
+            st.write(f"### Results for {name}")
+
+        st.subheader("Your Readiness Report")
+
+        a, b, c = st.columns(3)
+
+        a.metric("Skill Match", f"{score}%")
+        b.metric("Skills Matched", f"{len(matched)}")
+        c.metric("Skills to Develop", f"{len(missing)}")
+
+        st.progress(score / 100)
+
+        if score >= 80:
+            st.success("Strong skill alignment with this role!")
+        elif score >= 50:
+            st.info("Good foundation! Strengthen the remaining skills.")
+        else:
+            st.warning("Start building the core skills for this role.")
+
+        left, right = st.columns(2)
+
+        with left:
+            st.markdown("### ✅ Your Strengths")
+            if matched:
+                for skill in matched:
+                    st.write(f"• {skill.title()}")
+            else:
+                st.write("No matched skills yet.")
+
+        with right:
+            st.markdown("### 📌 Skill Gaps")
+            if missing:
+                for skill in missing:
+                    st.write(f"• {skill.title()}")
+            else:
+                st.write("You matched all listed skills!")
+
+        # Chart
+        fig, ax = plt.subplots()
+        ax.bar(
+            ["Matched", "Missing"],
+            [len(matched), len(missing)]
+        )
+        ax.set_title("Skill Alignment Overview")
+        ax.set_ylabel("Number of Skills")
+
+        st.pyplot(fig)
+
+        # Personalized roadmap
+        st.markdown("## 🚀 Your Learning Roadmap")
+
+        if missing:
+            for i, skill in enumerate(missing, 1):
+                st.markdown(f"**Step {i}: {skill.title()}**")
+                st.write(
+                    learning_resources.get(
+                        skill,
+                        f"Study {skill} and build a small practical project."
+                    )
+                )
+        else:
+            st.success(
+                "You have matched every skill in this role profile. "
+                "Focus next on projects and interview preparation."
+            )
+
+        st.markdown("## 💡 Recommended Next Step")
+
+        if missing:
+            st.write(
+                f"Focus first on **{missing[0].title()}**. "
+                "Build a small project using it and add the project "
+                "to your portfolio."
+            )
+        else:
+            st.write(
+                "Build a project demonstrating these skills "
+                "and prepare to explain your design decisions."
+            )
+
+        st.caption(
+            "Note: This prototype uses predefined skill profiles "
+            "and matching logic. Its score is an estimate, not a "
+            "guarantee of internship selection."
+        )
